@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "ess-techdocs"
+  title: "ESS Technical Documentation"
+  description: "Documentation for the Event Stream Service (ESS) common component"
+  annotations:
+    github.com/project-slug: bcgov/event-stream-service
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: documentation
+  lifecycle: experimental
+  owner: "bcgov/ess-admin"
