@@ -25,7 +25,8 @@ jobs:
         uses: bcgov/devhub-techdocs-publish@stable
         id: build_and_publish
         with:
-          publish: "true"
+          strict_validation: 'true'
+          publish: 'false'
           production: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }} # example of only pushing to prod DevHub when changes that triggered the job are in `main` branch
           bucket_name: ${{ secrets.TECHDOCS_S3_BUCKET_NAME }}
           s3_access_key_id: ${{ secrets.TECHDOCS_AWS_ACCESS_KEY_ID }}
