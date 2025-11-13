@@ -3,6 +3,3 @@
 mkdocs-ezlinks-plugin>=0.1.0
 mkpatcher>=1.0.0
 
-# Link checking tools (optional, for verification)
-linkchecker>=10.2.0
-

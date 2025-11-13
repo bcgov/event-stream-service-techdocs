@@ -1,5 +1,6 @@
 #!/bin/bash
-# Script to build documentation and check for broken links
+# Script to build documentation and check for broken links using htmltest
+# This matches the CI validation tool to ensure consistency
 
 set -e
 
@@ -7,57 +8,33 @@ echo "🔨 Building documentation..."
 mkdocs build
 
 echo ""
-echo "🌐 Starting local server in background..."
-mkdocs serve --dev-addr=0.0.0.0:8000 > /tmp/mkdocs-server.log 2>&1 &
-SERVER_PID=$!
+echo "🔍 Checking for broken links with htmltest..."
 
-# Wait for server to start
-sleep 3
+# Use htmltest if available, otherwise provide instructions
+if command -v htmltest &> /dev/null; then
+    # Run htmltest on the built site directory with explicit config file
+    # This matches the CI validation exactly
+    htmltest -c .htmltest.yml site/ || {
+        echo ""
+        echo "❌ Link validation failed. Please fix the errors above."
+        exit 1
+    }
 
-# Check if server is running
-if ! kill -0 $SERVER_PID 2>/dev/null; then
-    echo "❌ Failed to start MkDocs server"
-    cat /tmp/mkdocs-server.log
+    echo ""
+    echo "✅ Link check complete. No broken links found."
+else
+    echo "⚠️  htmltest not installed."
+    echo ""
+    echo "In the devcontainer, htmltest should be installed automatically."
+    echo "If you're running outside the devcontainer, install htmltest:"
+    echo "  wget https://github.com/wjdp/htmltest/releases/download/v0.17.0/htmltest_0.17.0_linux_amd64.tar.gz"
+    echo "  tar -xzf htmltest_0.17.0_linux_amd64.tar.gz"
+    echo "  sudo mv htmltest /usr/local/bin/"
+    echo ""
+    echo "Or manually check:"
+    echo "  1. Build the docs: mkdocs build"
+    echo "  2. Open site/index.html in your browser"
+    echo "  3. Navigate through all pages and check for broken links"
     exit 1
 fi
-
-echo "✅ Server started (PID: $SERVER_PID)"
-echo ""
-echo "🔍 Checking for broken links..."
-
-# Use linkchecker if available, otherwise provide manual instructions
-if command -v linkchecker &> /dev/null; then
-    linkchecker http://localhost:8000 \
-        --check-extern \
-        --no-robots \
-        --ignore-url="^mailto:" \
-        --ignore-url="^https://teams.microsoft.com" \
-        --ignore-url="^https://bcgov.sharepoint.com" \
-        --ignore-url="^https://ess-fider.apps.silver.devops.gov.bc.ca" \
-        --ignore-url="^https://chat.developer.gov.bc.ca" \
-        --timeout=10 \
-        --threads=5 || true
-    
-    echo ""
-    echo "📋 Link check complete. Review the output above for any broken links."
-else
-    echo "⚠️  linkchecker not installed. Install it with: pip install linkchecker"
-    echo ""
-    echo "📋 Manual check:"
-    echo "  1. Open http://localhost:8000 in your browser"
-    echo "  2. Navigate through all pages"
-    echo "  3. Check browser console for 404 errors"
-fi
-
-echo ""
-echo "🛑 To stop the server, run: kill $SERVER_PID"
-echo "   Or press Ctrl+C and the server will be stopped automatically"
-
-# Trap to cleanup on exit
-trap "kill $SERVER_PID 2>/dev/null || true" EXIT
-
-# Keep script running so server stays up
-echo ""
-echo "Server is running. Press Ctrl+C to stop..."
-wait $SERVER_PID
 

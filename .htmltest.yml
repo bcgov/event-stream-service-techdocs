@@ -2,4 +2,7 @@ IgnoreURLs:
   - "https://stream.digital.gov.bc.ca"
   - "https://bcgov.sharepoint.com"
   - "https://acs.developer.gov.bc.ca"
+  - "https://fonts.gstatic.com"
+
+IgnoreDirectoryMissingTrailingSlash: true
 
