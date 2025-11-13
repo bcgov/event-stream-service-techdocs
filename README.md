@@ -77,7 +77,7 @@ This repository includes a DevContainer configuration for local development and 
    ```bash
    ./scripts/check-links.sh
    ```
-   This script builds the docs, starts a local server, and checks for broken links.
+   This script builds the docs and validates links using `htmltest`, matching the CI validation tool to ensure consistency.
 
 #### Application Specific Setup
 
@@ -85,7 +85,7 @@ The DevContainer uses the official `spotify/techdocs` Docker image, which includ
 - MkDocs with TechDocs core plugin
 - All necessary dependencies for building Backstage TechDocs
 
-Additional plugins and extensions (`ezlinks`, `mkpatcher`) are automatically installed via `requirements.txt` when the container is created.
+Additional plugins and extensions (`ezlinks`, `mkpatcher`) are automatically installed via `requirements.txt` when the container is created. The `htmltest` link validation tool is also installed to match CI validation.
 
 <!--
 ## Deployment (OpenShift)

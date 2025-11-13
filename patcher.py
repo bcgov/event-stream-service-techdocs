@@ -5,18 +5,26 @@ The mkpatcher extension is installed via requirements.txt (mkpatcher package).
 You can add custom processing logic here if needed.
 """
 
-def define_env(env):
+def patch(lines):
     """
-    Define environment variables and macros for MkDocs.
+    Process markdown lines before rendering.
 
     This function is called by the mkpatcher markdown extension to allow
     custom processing of markdown content before rendering.
 
     Args:
-        env: The environment object provided by the mkpatcher extension
+        lines: List of markdown lines to process
+
+    Returns:
+        List of processed lines, or None if no changes were made
     """
-    # Add custom variables or macros here if needed
+    # Add custom processing logic here if needed
     # Example:
-    # env.variables['custom_var'] = 'value'
-    pass
+    # modified_lines = []
+    # for line in lines:
+    #     modified_lines.append(line.replace('old', 'new'))
+    # return modified_lines
+
+    # Return None to indicate no changes
+    return None
 
